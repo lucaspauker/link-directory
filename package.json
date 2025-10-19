@@ -1,0 +1,12 @@
+{
+  "name": "link-directory",
+  "version": "1.0.0",
+  "description": "A simple project directory manager",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
