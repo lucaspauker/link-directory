@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Directory</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23764ba2'/%3E%3C/svg%3E">
     <style>
         * {
             margin: 0;
@@ -19,7 +20,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
             background: white;
             border-radius: 12px;
@@ -172,6 +173,73 @@
             transform: none;
             box-shadow: none;
         }
+
+        .edit-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.2s;
+            margin-right: 5px;
+        }
+
+        .edit-btn:hover {
+            background: #218838;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .save-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.2s;
+            margin-right: 5px;
+        }
+
+        .save-btn:hover {
+            background: #0069d9;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .cancel-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.2s;
+            margin-right: 5px;
+        }
+
+        .cancel-btn:hover {
+            background: #5a6268;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .edit-input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #667eea;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .edit-input:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
     </style>
 </head>
 <body>
@@ -186,7 +254,7 @@
                         <th>Project Name</th>
                         <th>Link</th>
                         <th>Created</th>
-                        <th>Action</th>
+                        <th style="width: 200px;">Action</th>
                     </tr>
                 </thead>
                 <tbody id="projectTableBody">
@@ -262,6 +330,14 @@
             return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
 
+        // Truncate URL for display
+        function truncateUrl(url, maxLength = 50) {
+            if (url.length <= maxLength) {
+                return url;
+            }
+            return url.substring(0, maxLength) + '...';
+        }
+
         // Delete project
         async function deleteProject(id, event) {
             event.stopPropagation(); // Prevent row click
@@ -279,6 +355,72 @@
             }
         }
 
+        // Edit project
+        function editProject(id, event) {
+            event.stopPropagation(); // Prevent row click
+            const project = projects.find(p => p.id === id);
+            if (!project) return;
+
+            const row = event.target.closest('tr');
+            const cells = row.querySelectorAll('td');
+
+            // Store original values
+            row.dataset.originalName = project.name;
+            row.dataset.originalLink = project.link;
+            row.dataset.editing = 'true';
+
+            // Replace name cell with input
+            cells[1].innerHTML = `<input type="text" class="edit-input" value="${project.name}" id="edit-name-${id}">`;
+
+            // Replace link cell with input
+            cells[2].innerHTML = `<input type="url" class="edit-input" value="${project.link}" id="edit-link-${id}">`;
+
+            // Replace action buttons
+            cells[4].innerHTML = `
+                <button class="save-btn" onclick="saveProject(${id}, event)">Save</button>
+                <button class="cancel-btn" onclick="cancelEdit(${id}, event)">Cancel</button>
+            `;
+        }
+
+        // Save edited project
+        async function saveProject(id, event) {
+            event.stopPropagation();
+
+            const name = document.getElementById(`edit-name-${id}`).value;
+            const link = document.getElementById(`edit-link-${id}`).value;
+
+            if (!name || !link) {
+                alert('Name and link are required');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/projects/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, link })
+                });
+
+                const updatedProject = await response.json();
+                const index = projects.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    projects[index] = updatedProject;
+                }
+                renderProjects();
+            } catch (error) {
+                console.error('Failed to update project:', error);
+                alert('Failed to update project');
+            }
+        }
+
+        // Cancel edit
+        function cancelEdit(id, event) {
+            event.stopPropagation();
+            renderProjects();
+        }
+
         // Render projects table
         function renderProjects() {
             const tbody = document.getElementById('projectTableBody');
@@ -291,10 +433,13 @@
             tbody.innerHTML = projects.map((project, index) => `
                 <tr draggable="true" data-id="${project.id}" data-index="${index}">
                     <td class="drag-handle" onclick="event.stopPropagation()">&#8942;&#8942;</td>
-                    <td onclick="window.open('${project.link}', '_blank')">${project.name}</td>
-                    <td onclick="window.open('${project.link}', '_blank')">${project.link}</td>
+                    <td onclick="window.open('${project.link}', '_blank')"><strong>${project.name}</strong></td>
+                    <td onclick="window.open('${project.link}', '_blank')" title="${project.link}">${truncateUrl(project.link)}</td>
                     <td onclick="window.open('${project.link}', '_blank')">${formatDate(project.created)}</td>
-                    <td><button class="delete-btn" onclick="deleteProject(${project.id}, event)">Delete</button></td>
+                    <td>
+                        <button class="edit-btn" onclick="editProject(${project.id}, event)">Edit</button>
+                        <button class="delete-btn" onclick="deleteProject(${project.id}, event)">Delete</button>
+                    </td>
                 </tr>
             `).join('');
 
