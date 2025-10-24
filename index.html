@@ -253,7 +253,7 @@
                         <th style="width: 40px;"></th>
                         <th>Project Name</th>
                         <th>Link</th>
-                        <th>Created</th>
+                        <th>Last Updated</th>
                         <th style="width: 200px;">Action</th>
                     </tr>
                 </thead>
@@ -431,11 +431,11 @@
             }
 
             tbody.innerHTML = projects.map((project, index) => `
-                <tr draggable="true" data-id="${project.id}" data-index="${index}">
-                    <td class="drag-handle" onclick="event.stopPropagation()">&#8942;&#8942;</td>
-                    <td onclick="window.open('${project.link}', '_blank')"><strong>${project.name}</strong></td>
-                    <td onclick="window.open('${project.link}', '_blank')" title="${project.link}">${truncateUrl(project.link)}</td>
-                    <td onclick="window.open('${project.link}', '_blank')">${formatDate(project.created)}</td>
+                <tr draggable="true" data-id="${project.id}" data-index="${index}" data-link="${project.link}">
+                    <td class="drag-handle">&#8942;&#8942;</td>
+                    <td><strong>${project.name}</strong></td>
+                    <td title="${project.link}">${truncateUrl(project.link)}</td>
+                    <td>${formatDate(project.updated || project.created)}</td>
                     <td>
                         <button class="edit-btn" onclick="editProject(${project.id}, event)">Edit</button>
                         <button class="delete-btn" onclick="deleteProject(${project.id}, event)">Delete</button>
@@ -451,6 +451,25 @@
                 row.addEventListener('drop', handleDrop);
                 row.addEventListener('dragend', handleDragEnd);
                 row.addEventListener('dragleave', handleDragLeave);
+
+                // Add click handler to open link (but not when clicking buttons, inputs, or drag handle)
+                row.addEventListener('click', function(e) {
+                    // Don't open link if clicking on buttons, inputs, or drag handle
+                    if (e.target.tagName === 'BUTTON' ||
+                        e.target.tagName === 'INPUT' ||
+                        e.target.classList.contains('drag-handle')) {
+                        return;
+                    }
+                    // Don't open link if row is in edit mode
+                    if (this.dataset.editing === 'true') {
+                        return;
+                    }
+                    // Open the project link
+                    const link = this.dataset.link;
+                    if (link) {
+                        window.open(link, '_blank');
+                    }
+                });
             });
         }
 

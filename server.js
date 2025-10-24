@@ -53,6 +53,38 @@ app.post('/api/projects', (req, res) => {
     }
 });
 
+// Update project
+app.put('/api/projects/:id', (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const { name, link } = req.body;
+
+        if (!name || !link) {
+            return res.status(400).json({ error: 'Name and link are required' });
+        }
+
+        const data = fs.readFileSync(DATA_FILE, 'utf8');
+        let projects = JSON.parse(data);
+
+        const projectIndex = projects.findIndex(p => p.id === id);
+        if (projectIndex === -1) {
+            return res.status(404).json({ error: 'Project not found' });
+        }
+
+        projects[projectIndex] = {
+            ...projects[projectIndex],
+            name,
+            link,
+            updated: new Date().toISOString()
+        };
+
+        fs.writeFileSync(DATA_FILE, JSON.stringify(projects, null, 2));
+        res.json(projects[projectIndex]);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update project' });
+    }
+});
+
 // Reorder projects
 app.put('/api/projects/reorder', (req, res) => {
     try {
