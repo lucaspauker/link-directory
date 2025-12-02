@@ -41,6 +41,7 @@ app.post('/api/projects', (req, res) => {
             id: Date.now(),
             name: name,
             link: link,
+            favorite: false,
             created: new Date().toISOString()
         };
 
@@ -93,6 +94,26 @@ app.put('/api/projects/reorder', (req, res) => {
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: 'Failed to reorder projects' });
+    }
+});
+
+// Toggle favorite
+app.patch('/api/projects/:id/favorite', (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const data = fs.readFileSync(DATA_FILE, 'utf8');
+        let projects = JSON.parse(data);
+
+        const projectIndex = projects.findIndex(p => p.id === id);
+        if (projectIndex === -1) {
+            return res.status(404).json({ error: 'Project not found' });
+        }
+
+        projects[projectIndex].favorite = !projects[projectIndex].favorite;
+        fs.writeFileSync(DATA_FILE, JSON.stringify(projects, null, 2));
+        res.json(projects[projectIndex]);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to toggle favorite' });
     }
 });
 

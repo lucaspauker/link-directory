@@ -14,32 +14,64 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f5f5f5;
             min-height: 100vh;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .topbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h1 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        .topbar-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
+            padding: 30px 40px;
         }
 
         h1 {
-            color: #333;
-            margin-bottom: 30px;
-            text-align: center;
-            font-size: 2em;
+            color: white;
+            margin: 0;
+            font-size: 1.8em;
         }
 
         .form-section {
-            background: #f8f9fa;
+            background: white;
             padding: 25px;
             border-radius: 8px;
             margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.3em;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
         }
 
         .form-group {
@@ -90,15 +122,31 @@
             transform: translateY(0);
         }
 
+        .add-project-btn {
+            background: white;
+            color: #667eea;
+            padding: 10px 24px;
+            border: 2px solid white;
+            font-size: 15px;
+        }
+
+        .add-project-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
         .table-section {
-            overflow-x: auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
         }
 
         thead {
@@ -148,6 +196,10 @@
             padding: 20px;
             color: #333;
             font-size: 16px;
+        }
+
+        td:nth-child(4) {
+            color: #888;
         }
 
         .no-projects {
@@ -214,18 +266,22 @@
             background: #6c757d;
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
+            padding: 12px 30px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 12px;
-            transition: background-color 0.2s;
-            margin-right: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
         }
 
         .cancel-btn:hover {
             background: #5a6268;
-            transform: none;
-            box-shadow: none;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        .cancel-btn:active {
+            transform: translateY(0);
         }
 
         .edit-input {
@@ -240,32 +296,75 @@
             outline: none;
             border-color: #764ba2;
         }
+
+        .star-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            margin-right: 8px;
+            transition: transform 0.2s;
+        }
+
+        .star-btn:hover {
+            transform: scale(1.2);
+            box-shadow: none;
+        }
+
+        .star-btn.favorited {
+            color: #ffc107;
+        }
+
+        .star-btn:not(.favorited) {
+            color: #ccc;
+        }
+
+        .favicon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .section-header {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #667eea;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .section-header td {
+            padding: 12px 20px;
+        }
+
+        .section-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .projects-section {
+            margin-bottom: 30px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="topbar">
         <h1>Project Directory</h1>
-
-        <div class="table-section">
-            <table id="projectTable">
-                <thead>
-                    <tr>
-                        <th style="width: 40px;"></th>
-                        <th>Project Name</th>
-                        <th>Link</th>
-                        <th>Last Updated</th>
-                        <th style="width: 200px;">Action</th>
-                    </tr>
-                </thead>
-                <tbody id="projectTableBody">
-                    <tr class="no-projects">
-                        <td colspan="5">No projects yet. Add one below!</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="topbar-actions">
+            <button class="add-project-btn" onclick="toggleAddForm()">+ Add Project</button>
         </div>
+    </div>
 
-        <div class="form-section">
+    <div class="container">
+        <div class="form-section" id="addFormSection" style="display: none;">
+            <h2>Add New Project</h2>
             <form id="projectForm">
                 <div class="form-group">
                     <label for="projectName">Project Name</label>
@@ -277,13 +376,49 @@
                     <input type="url" id="projectLink" name="projectLink" required placeholder="https://example.com">
                 </div>
 
-                <button type="submit">Add Project</button>
+                <div class="form-actions">
+                    <button type="submit">Add Project</button>
+                    <button type="button" class="cancel-btn" onclick="toggleAddForm()">Cancel</button>
+                </div>
             </form>
+        </div>
+
+        <div id="favoritesSection" style="display: none;" class="projects-section">
+            <div class="table-section">
+                <table>
+                    <tbody id="favoritesTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="allProjectsSection" class="projects-section">
+            <div class="table-section">
+                <table>
+                    <tbody id="projectTableBody">
+                        <tr class="no-projects">
+                            <td colspan="5">No projects yet. Add one above!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
         let projects = [];
+        let faviconCache = {};
+
+        // Toggle add project form
+        function toggleAddForm() {
+            const formSection = document.getElementById('addFormSection');
+            if (formSection.style.display === 'none') {
+                formSection.style.display = 'block';
+                document.getElementById('projectName').focus();
+            } else {
+                formSection.style.display = 'none';
+                document.getElementById('projectForm').reset();
+            }
+        }
 
         // Load projects from server
         async function loadProjects() {
@@ -316,8 +451,9 @@
                 projects.push(newProject);
                 renderProjects();
 
-                // Reset form
+                // Reset form and hide it
                 this.reset();
+                toggleAddForm();
             } catch (error) {
                 console.error('Failed to add project:', error);
                 alert('Failed to add project');
@@ -421,31 +557,142 @@
             renderProjects();
         }
 
+        // Toggle favorite
+        async function toggleFavorite(id, event) {
+            event.stopPropagation(); // Prevent row click
+            try {
+                const response = await fetch(`/api/projects/${id}/favorite`, {
+                    method: 'PATCH'
+                });
+                const updatedProject = await response.json();
+                const index = projects.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    projects[index] = updatedProject;
+                }
+                renderProjects();
+            } catch (error) {
+                console.error('Failed to toggle favorite:', error);
+                alert('Failed to toggle favorite');
+            }
+        }
+
+        // Try loading favicon with fallbacks for SVG and ICO
+        function createFaviconImg(url) {
+            try {
+                const urlObj = new URL(url);
+                const origin = urlObj.origin;
+
+                // Check cache first
+                if (faviconCache[url]) {
+                    if (faviconCache[url] === 'none') {
+                        return '';
+                    }
+                    return `<img src="${faviconCache[url]}" class="favicon" alt="">`;
+                }
+
+                // Try multiple common favicon locations
+                const fallbackUrls = [
+                    `${origin}/favicon.svg`,
+                    `${origin}/favicon.ico`,
+                    `${origin}/static/favicon.svg`,
+                    `${origin}/static/favicon.ico`,
+                    `${origin}/assets/favicon.svg`,
+                    `${origin}/assets/favicon.ico`
+                ];
+
+                return `<img src="${fallbackUrls[0]}" class="favicon" alt="" data-project-url="${url}" data-fallback-index="0" data-fallback-urls='${JSON.stringify(fallbackUrls)}' onerror="tryNextFavicon(this)">`;
+            } catch {
+                return '';
+            }
+        }
+
+        // Try next favicon URL if current one fails
+        function tryNextFavicon(img) {
+            const urls = JSON.parse(img.dataset.fallbackUrls);
+            const currentIndex = parseInt(img.dataset.fallbackIndex);
+            const nextIndex = currentIndex + 1;
+            const projectUrl = img.dataset.projectUrl;
+
+            if (nextIndex < urls.length) {
+                img.dataset.fallbackIndex = nextIndex;
+                img.src = urls[nextIndex];
+            } else {
+                // All failed, hide the image
+                img.style.display = 'none';
+                faviconCache[projectUrl] = 'none';
+            }
+        }
+
         // Render projects table
         function renderProjects() {
-            const tbody = document.getElementById('projectTableBody');
+            const favoritesSection = document.getElementById('favoritesSection');
+            const favoritesBody = document.getElementById('favoritesTableBody');
+            const allProjectsBody = document.getElementById('projectTableBody');
 
-            if (projects.length === 0) {
-                tbody.innerHTML = '<tr class="no-projects"><td colspan="5">No projects yet. Add one above!</td></tr>';
-                return;
+            // Separate favorites and non-favorites
+            const favorites = projects.filter(p => p.favorite);
+            const nonFavorites = projects.filter(p => !p.favorite);
+
+            // Render favorites section
+            if (favorites.length > 0) {
+                favoritesSection.style.display = 'block';
+                let favoritesHtml = '<tr class="section-header"><td colspan="5">Favorites</td></tr>';
+                favorites.forEach((project, index) => {
+                    const faviconImg = createFaviconImg(project.link);
+                    favoritesHtml += `
+                        <tr draggable="true" data-id="${project.id}" data-index="${projects.indexOf(project)}" data-link="${project.link}">
+                            <td class="drag-handle">&#8942;&#8942;</td>
+                            <td>
+                                <button class="star-btn favorited" onclick="toggleFavorite(${project.id}, event)">★</button>
+                                ${faviconImg}
+                                <strong>${project.name}</strong>
+                            </td>
+                            <td title="${project.link}">${truncateUrl(project.link)}</td>
+                            <td>${formatDate(project.updated || project.created)}</td>
+                            <td>
+                                <button class="edit-btn" onclick="editProject(${project.id}, event)">Edit</button>
+                                <button class="delete-btn" onclick="deleteProject(${project.id}, event)">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                favoritesBody.innerHTML = favoritesHtml;
+            } else {
+                favoritesSection.style.display = 'none';
             }
 
-            tbody.innerHTML = projects.map((project, index) => `
-                <tr draggable="true" data-id="${project.id}" data-index="${index}" data-link="${project.link}">
-                    <td class="drag-handle">&#8942;&#8942;</td>
-                    <td><strong>${project.name}</strong></td>
-                    <td title="${project.link}">${truncateUrl(project.link)}</td>
-                    <td>${formatDate(project.updated || project.created)}</td>
-                    <td>
-                        <button class="edit-btn" onclick="editProject(${project.id}, event)">Edit</button>
-                        <button class="delete-btn" onclick="deleteProject(${project.id}, event)">Delete</button>
-                    </td>
-                </tr>
-            `).join('');
+            // Render all projects section
+            if (nonFavorites.length > 0) {
+                let allProjectsHtml = '<tr class="section-header"><td colspan="5">All Projects</td></tr>';
+                nonFavorites.forEach((project, index) => {
+                    const faviconImg = createFaviconImg(project.link);
+                    allProjectsHtml += `
+                        <tr draggable="true" data-id="${project.id}" data-index="${projects.indexOf(project)}" data-link="${project.link}">
+                            <td class="drag-handle">&#8942;&#8942;</td>
+                            <td>
+                                <button class="star-btn" onclick="toggleFavorite(${project.id}, event)">☆</button>
+                                ${faviconImg}
+                                <strong>${project.name}</strong>
+                            </td>
+                            <td title="${project.link}">${truncateUrl(project.link)}</td>
+                            <td>${formatDate(project.updated || project.created)}</td>
+                            <td>
+                                <button class="edit-btn" onclick="editProject(${project.id}, event)">Edit</button>
+                                <button class="delete-btn" onclick="deleteProject(${project.id}, event)">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                allProjectsBody.innerHTML = allProjectsHtml;
+            } else if (projects.length === 0) {
+                allProjectsBody.innerHTML = '<tr class="no-projects"><td colspan="5">No projects yet. Add one above!</td></tr>';
+            } else {
+                allProjectsBody.innerHTML = '';
+            }
 
-            // Add drag and drop event listeners
-            const rows = tbody.querySelectorAll('tr[draggable="true"]');
-            rows.forEach(row => {
+            // Add drag and drop event listeners for both tables
+            const allRows = document.querySelectorAll('tr[draggable="true"]');
+            allRows.forEach(row => {
                 row.addEventListener('dragstart', handleDragStart);
                 row.addEventListener('dragover', handleDragOver);
                 row.addEventListener('drop', handleDrop);
@@ -454,10 +701,13 @@
 
                 // Add click handler to open link (but not when clicking buttons, inputs, or drag handle)
                 row.addEventListener('click', function(e) {
-                    // Don't open link if clicking on buttons, inputs, or drag handle
+                    // Don't open link if clicking on buttons, inputs, favicon, or drag handle
                     if (e.target.tagName === 'BUTTON' ||
                         e.target.tagName === 'INPUT' ||
-                        e.target.classList.contains('drag-handle')) {
+                        e.target.tagName === 'IMG' ||
+                        e.target.classList.contains('drag-handle') ||
+                        e.target.classList.contains('star-btn') ||
+                        e.target.classList.contains('favicon')) {
                         return;
                     }
                     // Don't open link if row is in edit mode
